@@ -1,76 +1,217 @@
-google.charts.load('current', { packages: ['corechart'] });
-google.charts.setOnLoadCallback(drawCharts);
+document.addEventListener('DOMContentLoaded', async function () {
+  const searchButton = document.getElementById('searchButton');
+  searchButton.addEventListener('click', function () {
+    const dependenciaSelect = document.getElementById('dependenciaSelect');
+    const estadoSelect = document.getElementById('estadoSelect');
 
-function drawCharts() {
-  var dataBibliotecas = google.visualization.arrayToDataTable([
-    ['Estado', 'Quantidade'],
-    ['Pernambuco', 50],
-    ['Bahoa', 40]
-  ]);
+    const dependencia = dependenciaSelect.value;
+    const estado = estadoSelect.value;
 
-  var dataBibliotecarios = google.visualization.arrayToDataTable([
-    ['Estado', 'Quantidade'],
-    ['Pernambuco', 30],
-    ['Bahia', 35]
-  ]);
-  var commonOptions = {
-    is3D: true,
-    chartArea: { width: '80%', height: '70%' },
-    titleTextStyle: { fontSize: 16, bold: true }
-  };
+    updateCharts(dependencia, estado);
 
-  var optionsBibliotecas = Object.assign({}, commonOptions, {
-    title: 'Quantidade de Bibliotecas',
-    colors: ['#3366cc', '#FABD10']
+    // Mostra os títulos após clicar no botão de pesquisa
+    const pieTextTitles = document.querySelectorAll('.pie-text');
+    pieTextTitles.forEach(title => {
+      title.style.display = 'block';
+    });
   });
 
-  var optionsBibliotecarios = Object.assign({}, commonOptions, {
-    title: 'Quantidade de Bibliotecários',
-    colors: ['#3366cc', '#FABD10']
-  });
+  const estadoSelect = document.getElementById('estadoSelect');
 
-  var chartBibliotecas = new google.visualization.PieChart(
-    document.getElementById('chartContainer1')
-  );
-  chartBibliotecas.draw(dataBibliotecas, optionsBibliotecas);
+  // Adiciona dinamicamente as opções de estados nos selects
+  await updateEstadoSelectOptions(estadoSelect);
 
-  var chartBibliotecarios = new google.visualization.PieChart(
-    document.getElementById('chartContainer2')
-  );
-  chartBibliotecarios.draw(dataBibliotecarios, optionsBibliotecarios);
+  async function updateEstadoSelectOptions(select) {
+    const estados = await fetchData('/estados');
+    select.innerHTML = '';
+    estados.forEach(estado => {
+      const option = document.createElement('option');
+      option.value = estado;
+      option.textContent = estado;
+      select.appendChild(option);
+    });
+  }
 
-  var dataBar = google.visualization.arrayToDataTable([
-    ['Equipamento', 'Estado A', 'Estado B'],
-    ['Computadores', 150, 120],
-    ['Tablets', 50, 60],
-    ['Projetores', 30, 40],
-    ['Televisões', 20, 15],
-    ['Outros equipamentos', 20, 15]
-  ]);
+  async function fetchData(url) {
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+    }
+  }
 
-  var optionsBar = {
-    title: 'Equipamentos Eletrônicos',
-    chartArea: { width: '80%', height: '70%' },
-    legend: { position: 'top', maxLines: 3 },
-    isStacked: true,
-    vAxis: { title: 'Quantidade' },
-    hAxis: { title: 'Equipamento' },
-    series: {
-      0: { color: '#3366cc' },
-      1: { color: '#FABD10' }
-    },
-    titleTextStyle: { fontSize: 16, bold: true }
-  };
+  async function updateCharts(dependencia, estado) {
+    try {
+      const bibliotecasData = await fetchData(
+        `/dados-bibliotecas?dependencia=${dependencia}&estado=${estado}`
+      );
 
-  var chartBar = new google.visualization.ColumnChart(
-    document.getElementById('chartContainer3')
-  );
-  chartBar.draw(dataBar, optionsBar);
-}
+      const bibliotecariosPublicosData = await fetchData(
+        `/dados-bibliotecarios-publicos?estado=${estado}`
+      );
+      const bibliotecariosPrivadosData = await fetchData(
+        `/dados-bibliotecarios-privados?estado=${estado}`
+      );
 
-function toggleMenu() {
-  var dropdownWrapper = document.querySelector('.dropdown-wrapper');
-  dropdownWrapper.style.display =
-    dropdownWrapper.style.display === 'none' ? 'flex' : 'none';
-}
+      const equipamentosData = await fetchData(
+        `/dados-equipamentos?estado=${estado}`
+      );
 
+      const equipamentosPublicosData = await fetchData(
+        `/dados-equipamentos-publicos?estado=${estado}`
+      );
+      const equipamentosPrivadosData = await fetchData(
+        `/dados-equipamentos-privados?estado=${estado}`
+      );
+
+      // Certifique-se de que os dados estão sendo retornados corretamente
+      console.log('Bibliotecas Data:', bibliotecasData);
+      console.log('Bibliotecários Públicos Data:', bibliotecariosPublicosData);
+      console.log('Bibliotecários Privados Data:', bibliotecariosPrivadosData);
+      console.log('Equipamentos Data:', equipamentosData);
+      console.log('Equipamentos Públicos Data:', equipamentosPublicosData);
+      console.log('Equipamentos Privados Data:', equipamentosPrivadosData);
+
+      createPieChart(
+        'chartContainer1',
+        'Qtd Bibliotecas',
+        [bibliotecasData.publicas, bibliotecasData.privadas],
+        ['Público', 'Privado']
+      );
+
+      createPieChart(
+        'chartContainer2',
+        'Qtd Bibliotecários',
+        [
+          bibliotecariosPublicosData ? bibliotecariosPublicosData.total_bibliotecarios_publicos || 0 : 0,
+          bibliotecariosPrivadosData ? bibliotecariosPrivadosData.total_bibliotecarios_privados || 0 : 0
+        ],
+        ['Público', 'Privado']
+      );
+
+      createBarChart('chartContainer3', 'Quantidade de Equipamentos', {
+        totalDeskPriv: equipamentosPrivadosData,
+        totalSomPriv: equipamentosPrivadosData,
+        totalMultPriv: equipamentosPrivadosData,
+        totalDeskPub: equipamentosPublicosData,
+        totalSomPub: equipamentosPublicosData,
+        totalMultPub: equipamentosPublicosData,
+        totalTvPub: equipamentosPublicosData,
+      });
+
+      createBarChart('chartContainer4', 'Quantidade de Bibliotecários', {
+        totalBiblioPub: bibliotecariosPublicosData,
+        totalBiblioPriv: bibliotecariosPrivadosData,
+      });
+
+    } catch (error) {
+      console.error('Erro ao atualizar gráficos:', error);
+    }
+  }
+
+  function createPieChart(containerId, title, values, labels) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.error(`Container element with id '${containerId}' not found.`);
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    container.innerHTML = ''; // Limpar o conteúdo anterior
+    container.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: values,
+            backgroundColor: ['#36a2eb', '#FFCE56'],
+          },
+        ],
+      },
+      options: {
+        title: {
+          display: true,
+          text: title,
+        },
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            boxWidth: 20,
+          },
+        },
+      },
+    });
+  }
+
+  function createBarChart(containerId, title, data) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.error(`Container element with id '${containerId}' not found.`);
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    container.innerHTML = ''; // Limpar o conteúdo anterior
+    container.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: [
+          'Desktop Aluno',
+          'Equipamento Som',
+          'Equipamento Multimídia',
+          'Equipamento TV',
+        ],
+        datasets: [
+          {
+            label: title,
+            data: [
+              data.totalDeskPriv ? data.totalDeskPriv.total_qt_desktop_aluno : 0,
+              data.totalSomPriv ? data.totalSomPriv.total_qt_equip_som : 0,
+              data.totalMultPriv ? data.totalMultPriv.total_qt_equip_multimidia : 0,
+              data.totalTvPriv ? data.totalTvPriv.total_qt_equip_tv : 0,
+            ],
+            backgroundColor: '#36a2eb',
+          },
+          {
+            label: 'Equipamentos Públicos',
+            data: [
+              data.totalDeskPub ? data.totalDeskPub.totalDesk : 0,
+              data.totalSomPub ? data.totalSomPub.totalSom : 0,
+              data.totalMultPub ? data.totalMultPub.totalMult : 0,
+              data.totalTvPub ? data.totalTvPub.totalTv : 0,
+            ],
+            backgroundColor: '#FFCE56',
+          },
+          {
+            label: 'Equipamentos Privados',
+            data: [
+              data.totalDeskPriv ? data.totalDeskPriv.totalDeskPriv : 0,
+              data.totalSomPriv ? data.totalSomPriv.totalSomPriv : 0,
+              data.totalMultPriv ? data.totalMultPriv.totalMultPriv : 0,
+              data.totalTvPriv ? data.totalTvPriv.totalTvPriv : 0,
+            ],
+            backgroundColor: '#4CAF50',
+          },
+        ],
+      },
+      options: {
+        legend: {
+          display: true,
+        },
+        title: {
+          display: true,
+          text: title,
+        },
+      },
+    });
+  }
+});
