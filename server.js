@@ -17,6 +17,9 @@ const client = new Client({
 client.connect();
 
 app.use(express.static(path.join(__dirname)));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.get('/dados-bibliotecas', async (req, res) => {
   const estado = req.query.estado || '';
