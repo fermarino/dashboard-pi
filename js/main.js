@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     updateCharts(dependencia, estado);
 
-    // Mostra os títulos após clicar no botão de pesquisa
+
     const pieTextTitles = document.querySelectorAll('.pie-text');
     pieTextTitles.forEach(title => {
       title.style.display = 'block';
