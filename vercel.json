@@ -8,11 +8,35 @@
   ],
   "routes": [
     {
-      "src": "(.*)",
+      "src": "/api/dados-bibliotecas",
       "dest": "server.js"
     },
     {
-      "src": "(.*)",
+      "src": "/api/dados-bibliotecarios-publicos",
+      "dest": "server.js"
+    },
+    {
+      "src": "/api/dados-bibliotecarios-privados",
+      "dest": "server.js"
+    },
+    {
+      "src": "/api/dados-equipamentos",
+      "dest": "server.js"
+    },
+    {
+      "src": "/api/dados-equipamentos-publicos",
+      "dest": "server.js"
+    },
+    {
+      "src": "/api/dados-equipamentos-privados",
+      "dest": "server.js"
+    },
+    {
+      "src": "/api/estados",
+      "dest": "server.js"
+    },
+    {
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ],
