@@ -3,7 +3,10 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "https://dashboard-pi-production.up.railway.app/$1"
+      "dest": "https://dashboard-pi-production.up.railway.app/$1",
+      "headers": {
+        "Host": "dashboard-pi-production.up.railway.app"
+      }
     }
   ]
 }
