@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     updateCharts(dependencia, estado);
 
-
     const pieTextTitles = document.querySelectorAll('.pie-text');
     pieTextTitles.forEach(title => {
       title.style.display = 'block';
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   await updateEstadoSelectOptions(estadoSelect);
 
   async function updateEstadoSelectOptions(select) {
-    const estados = await fetchData('/estados');
+    const estados = await fetchData('https://api-server-production-78b0.up.railway.app/estados');
     select.innerHTML = '';
     estados.forEach(estado => {
       const option = document.createElement('option');
@@ -43,33 +42,26 @@ document.addEventListener('DOMContentLoaded', async function () {
   async function updateCharts(dependencia, estado) {
     try {
       const bibliotecasData = await fetchData(
-        `/dados-bibliotecas?dependencia=${dependencia}&estado=${estado}`
+        `https://api-server-production-78b0.up.railway.app/dados-bibliotecas?dependencia=${dependencia}&estado=${estado}`
       );
 
       const bibliotecariosPublicosData = await fetchData(
-        `/dados-bibliotecarios-publicos?estado=${estado}`
+        `https://api-server-production-78b0.up.railway.app/dados-bibliotecarios-publicos?estado=${estado}`
       );
       const bibliotecariosPrivadosData = await fetchData(
-        `/dados-bibliotecarios-privados?estado=${estado}`
+        `https://api-server-production-78b0.up.railway.app/dados-bibliotecarios-privados?estado=${estado}`
       );
 
       const equipamentosData = await fetchData(
-        `/dados-equipamentos?estado=${estado}`
+        `https://api-server-production-78b0.up.railway.app/dados-equipamentos?estado=${estado}`
       );
 
       const equipamentosPublicosData = await fetchData(
-        `/dados-equipamentos-publicos?estado=${estado}`
+        `https://api-server-production-78b0.up.railway.app/dados-equipamentos-publicos?estado=${estado}`
       );
       const equipamentosPrivadosData = await fetchData(
-        `/dados-equipamentos-privados?estado=${estado}`
+        `https://api-server-production-78b0.up.railway.app/dados-equipamentos-privados?estado=${estado}`
       );
-
-      console.log('Bibliotecas Data:', bibliotecasData);
-      console.log('Bibliotecários Públicos Data:', bibliotecariosPublicosData);
-      console.log('Bibliotecários Privados Data:', bibliotecariosPrivadosData);
-      console.log('Equipamentos Data:', equipamentosData);
-      console.log('Equipamentos Públicos Data:', equipamentosPublicosData);
-      console.log('Equipamentos Privados Data:', equipamentosPrivadosData);
 
       createPieChart(
         'chartContainer1',
