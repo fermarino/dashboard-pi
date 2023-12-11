@@ -20,15 +20,33 @@ document.addEventListener('DOMContentLoaded', async function () {
   await updateEstadoSelectOptions(estadoSelect);
 
   async function updateEstadoSelectOptions(select) {
-    const estados = await fetchData('https://api-server-production-78b0.up.railway.app/estados');
-    select.innerHTML = '';
-    estados.forEach(estado => {
-      const option = document.createElement('option');
-      option.value = estado;
-      option.textContent = estado;
-      select.appendChild(option);
-    });
+    try {
+      const estados = await fetchData('https://api-server-production-78b0.up.railway.app/estados');
+      console.log('Estados:', estados);
+  
+      // Adicione estas linhas para depurar
+      if (!estados) {
+        console.log('A resposta do backend está vazia ou indefinida.');
+        return;
+      }
+  
+      if (!Array.isArray(estados)) {
+        console.log('A resposta do backend não é uma matriz.');
+        return;
+      }
+  
+      select.innerHTML = '';
+      estados.forEach(estado => {
+        const option = document.createElement('option');
+        option.value = estado;
+        option.textContent = estado;
+        select.appendChild(option);
+      });
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+    }
   }
+  
 
   async function fetchData(url) {
     try {
