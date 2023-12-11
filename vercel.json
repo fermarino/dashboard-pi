@@ -2,11 +2,15 @@
   "version": 2,
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/$1",
+      "src": "/api/(.*)",
+      "dest": "https://dashboard-pi-production.up.railway.app/api/$1",
       "headers": {
-        "Cache-Control": "public, max-age=0, must-revalidate"
+        "Host": "dashboard-pi-production.up.railway.app"
       }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
