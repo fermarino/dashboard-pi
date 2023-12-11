@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "node server.js"
-  },
+      "start": "echo 'This project does not require a server.'"  
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",

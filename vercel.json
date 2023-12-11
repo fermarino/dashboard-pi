@@ -1,13 +1,12 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "main.js",
-      "use": "@now/node"
-    }
-  ],
   "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/main.js" }
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    }
   ]
 }
