@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   const estadoSelect = document.getElementById('estadoSelect');
 
-  // Adiciona dinamicamente as opções de estados nos selects
   await updateEstadoSelectOptions(estadoSelect);
 
   async function updateEstadoSelectOptions(select) {
@@ -65,7 +64,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         `/dados-equipamentos-privados?estado=${estado}`
       );
 
-      // Certifique-se de que os dados estão sendo retornados corretamente
       console.log('Bibliotecas Data:', bibliotecasData);
       console.log('Bibliotecários Públicos Data:', bibliotecariosPublicosData);
       console.log('Bibliotecários Privados Data:', bibliotecariosPrivadosData);
@@ -157,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     const canvas = document.createElement('canvas');
-    container.innerHTML = ''; // Limpar o conteúdo anterior
+    container.innerHTML = '';
     container.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
