@@ -8,13 +8,13 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "server.js" },
-    { "src": "/(.*)", "dest": "/" }
+    { "src": "/(.*)", "dest": "server.js" }
   ],
   "env": {
-    "DB_USER": "rchaewtw",
-    "DB_PASSWORD": "elwOtmmnDnH1QmHRG5NxPmf14wDag8ku",
-    "DB_DATABASE": "rchaewtw",
-    "DB_HOST": "isabelle.db.elephantsql.com",
-    "DB_PORT": "5432"
+    "DB_USER": "seu-usuario-do-banco",
+    "DB_PASSWORD": "sua-senha-do-banco",
+    "DB_DATABASE": "seu-banco-de-dados",
+    "DB_HOST": "seu-host-do-banco",
+    "DB_PORT": "sua-porta-do-banco"
   }
 }
