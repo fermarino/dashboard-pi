@@ -3,18 +3,11 @@
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node"
+      "use": "@now/node"
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "server.js" },
-    { "src": "/(.*)", "dest": "server.js" }
-  ],
-  "env": {
-    "DB_USER": "seu-usuario-do-banco",
-    "DB_PASSWORD": "sua-senha-do-banco",
-    "DB_DATABASE": "seu-banco-de-dados",
-    "DB_HOST": "seu-host-do-banco",
-    "DB_PORT": "sua-porta-do-banco"
-  }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/server.js" }
+  ]
 }
