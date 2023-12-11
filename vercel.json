@@ -2,19 +2,12 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "main.js",
       "use": "@now/node"
     }
   ],
   "routes": [
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/server.js" }
-  ],
-  "env": {
-    "DB_HOST": "seu_host",
-    "DB_USER": "seu_usuario",
-    "DB_PORT": "sua_porta",
-    "DB_PASSWORD": "sua_senha",
-    "DB_DATABASE": "seu_banco_de_dados"
-  }
+    { "src": "/(.*)", "dest": "/main.js" }
+  ]
 }
