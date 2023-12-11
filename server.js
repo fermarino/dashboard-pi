@@ -1,18 +1,12 @@
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
+const path = require('path');
 const { Client } = require('pg');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-
-app.use(cors({
-  origin: 'https://dashboard-pi-rose.vercel.app',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-}));
 
 
 
